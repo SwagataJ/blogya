@@ -8,32 +8,28 @@ import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(12).hex()
+
+
+# Connecting to database
 url = os.environ.get('MONGODB_URI')
 client = MongoClient(url, ssl_cert_reqs=ssl.CERT_NONE)
 db = client['myFlaskApp']
 users = db['users']
 
 
+# HomePage
 @app.route('/')
 def index():
     return render_template('index.html')
 
 
+# About
 @app.route('/about')
 def about():
     return render_template('about.html')
 
 
-'''@app.route('/articles')
-def articles():
-    return render_template('articles.html', articles=Articles)
-
-
-@app.route('/article/<string:id>/')
-def article(id):
-    return render_template('article.html', id=id)'''
-
-
+# Registration Form
 class RegisterForm(Form):
     name = StringField('Name', [validators.DataRequired(), validators.Length(min=1, max=50)])
     username = StringField('Username', [validators.DataRequired(), validators.Length(min=4, max=25)])
@@ -45,6 +41,7 @@ class RegisterForm(Form):
     confirm = PasswordField('Confirm Password')
 
 
+# Registration
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegisterForm(request.form)
@@ -52,6 +49,7 @@ def register():
         existing_username = users.find({'username': form.username.data})
         existing_email = users.find(({'Email': form.email.data}))
 
+        # Adding user's details to database
         if existing_username.count() == 0 and existing_email.count() == 0:
             users.insert_one({
                 'Name': form.name.data,
@@ -61,7 +59,7 @@ def register():
             })
 
             flash('You are now registered and can login', 'success')
-            return redirect(url_for('index'))
+            return redirect(url_for('login'))
         else:
             if existing_email.count() != 0:
                 flash('Email is already being used.')
@@ -70,9 +68,43 @@ def register():
     return render_template('register.html', form=form)
 
 
+# Login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password_candidate = request.form['password']
+        user = users.find_one({'username': username})
+
+        # Checking if user exists
+        if user is not None:
+            password = user['password']
+
+            # Checking the password
+            if sha256_crypt.verify(password_candidate, password):
+                session['logged-in'] = True
+                session['username'] = username
+
+                flash('You are now logged in.', 'success')
+                return redirect(url_for('dashboard'))
+            else:
+                error = 'Invalid login.'
+                return render_template('login.html', error=error)
+        else:
+            error = 'Username does not exist. Please register.'
+            return render_template('login.html', error=error)
     return render_template('login.html')
+
+
+# Logout
+@app.route('/logout')
+def logout():
+    session['logged-in'] = False
+    flash('You are now logged out.', 'success')
+    return redirect(url_for('login'))
+
+
+# Dashboard
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
