@@ -4,9 +4,10 @@ from passlib.hash import sha256_crypt
 from wtforms.fields.html5 import EmailField
 from pymongo import MongoClient
 import ssl
+import os
 
 app = Flask(__name__)
-url = "mongodb+srv://swagata:tupai@cluster0.fyurl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+url = os.environ.get('MONGODB_URI', None)
 client = MongoClient(url, ssl_cert_reqs=ssl.CERT_NONE)
 db = client['myFlaskApp']
 users = db['users']
