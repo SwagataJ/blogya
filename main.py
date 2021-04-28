@@ -7,7 +7,7 @@ import ssl
 import os
 
 app = Flask(__name__)
-url = os.environ.get('MONGODB_URI', None)
+url = os.environ.get('MONGODB_URI')
 client = MongoClient(url, ssl_cert_reqs=ssl.CERT_NONE)
 db = client['myFlaskApp']
 users = db['users']
