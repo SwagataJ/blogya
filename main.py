@@ -115,7 +115,7 @@ def is_logged_in(f):
 # Logout
 @app.route('/logout')
 def logout():
-    session['logged_in'] = False
+    session.clear()
     flash('You are now logged out.', 'success')
     return redirect(url_for('login'))
 
