@@ -31,9 +31,12 @@ def about():
 
 # Registration Form
 class RegisterForm(Form):
-    name = StringField('Name', [validators.DataRequired(), validators.Length(min=1, max=50)])
-    username = StringField('Username', [validators.DataRequired(), validators.Length(min=4, max=25)])
-    email = EmailField('Email address', [validators.DataRequired(), validators.Email()])
+    name = StringField(
+        'Name', [validators.DataRequired(), validators.Length(min=1, max=50)])
+    username = StringField(
+        'Username', [validators.DataRequired(), validators.Length(min=4, max=25)])
+    email = EmailField('Email address', [
+                       validators.DataRequired(), validators.Email()])
     password = PasswordField('Password', [
         validators.DataRequired(),
         validators.EqualTo('confirm', message='Passwords do not match.')
