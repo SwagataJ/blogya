@@ -61,11 +61,10 @@ def register():
 
             flash('You are now registered and can login', 'success')
             return redirect(url_for('login'))
-        else:
-            if existing_email.count() != 0:
-                flash('Email is already being used.')
-            elif existing_username.count() != 0:
-                flash('Username is already taken.')
+        if existing_email.count() != 0:
+            flash('Email is already being used.')
+        elif existing_username.count() != 0:
+            flash('Username is already taken.')
     return render_template('register.html', form=form)
 
 
@@ -88,9 +87,8 @@ def login():
 
                 flash('You are now logged in.', 'success')
                 return redirect(url_for('dashboard'))
-            else:
-                error = 'Invalid login.'
-                return render_template('login.html', error=error)
+            error = 'Invalid login.'
+            return render_template('login.html', error=error)
         else:
             error = 'Username does not exist. Please register.'
             return render_template('login.html', error=error)
@@ -103,9 +101,8 @@ def is_logged_in(f):
     def wrap(*args, **kwargs):
         if 'logged_in' in session:
             return f(*args, **kwargs)
-        else:
-            flash('Unauthorized, Please login', 'danger')
-            return redirect(url_for('login'))
+        flash('Unauthorized, Please login', 'danger')
+        return redirect(url_for('login'))
     return wrap
 
 
