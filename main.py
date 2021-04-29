@@ -1,3 +1,4 @@
+from functools import wraps
 from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 from passlib.hash import sha256_crypt
@@ -31,9 +32,12 @@ def about():
 
 # Registration Form
 class RegisterForm(Form):
-    name = StringField('Name', [validators.DataRequired(), validators.Length(min=1, max=50)])
-    username = StringField('Username', [validators.DataRequired(), validators.Length(min=4, max=25)])
-    email = EmailField('Email address', [validators.DataRequired(), validators.Email()])
+    name = StringField(
+        'Name', [validators.DataRequired(), validators.Length(min=1, max=50)])
+    username = StringField(
+        'Username', [validators.DataRequired(), validators.Length(min=4, max=25)])
+    email = EmailField('Email address', [
+                       validators.DataRequired(), validators.Email()])
     password = PasswordField('Password', [
         validators.DataRequired(),
         validators.EqualTo('confirm', message='Passwords do not match.')
@@ -96,6 +100,18 @@ def login():
     return render_template('login.html')
 
 
+# Check if user is logged in
+def is_logged_in(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash('Unauthorized, Please login', 'danger')
+            return redirect(url_for('login'))
+    return wrap
+
+
 # Logout
 @app.route('/logout')
 def logout():
@@ -106,8 +122,6 @@ def logout():
 
 # Dashboard
 @app.route('/dashboard')
+@is_logged_in
 def dashboard():
-    if session['logged_in'] == False:
-        return redirect(url_for('login'))
     return render_template('dashboard.html')
-    
