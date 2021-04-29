@@ -31,12 +31,9 @@ def about():
 
 # Registration Form
 class RegisterForm(Form):
-    name = StringField(
-        'Name', [validators.DataRequired(), validators.Length(min=1, max=50)])
-    username = StringField(
-        'Username', [validators.DataRequired(), validators.Length(min=4, max=25)])
-    email = EmailField('Email address', [
-                       validators.DataRequired(), validators.Email()])
+    name = StringField('Name', [validators.DataRequired(), validators.Length(min=1, max=50)])
+    username = StringField('Username', [validators.DataRequired(), validators.Length(min=4, max=25)])
+    email = EmailField('Email address', [validators.DataRequired(), validators.Email()])
     password = PasswordField('Password', [
         validators.DataRequired(),
         validators.EqualTo('confirm', message='Passwords do not match.')
@@ -85,7 +82,7 @@ def login():
 
             # Checking the password
             if sha256_crypt.verify(password_candidate, password):
-                session['logged-in'] = True
+                session['logged_in'] = True
                 session['username'] = username
 
                 flash('You are now logged in.', 'success')
@@ -102,7 +99,7 @@ def login():
 # Logout
 @app.route('/logout')
 def logout():
-    session['logged-in'] = False
+    session['logged_in'] = False
     flash('You are now logged out.', 'success')
     return redirect(url_for('login'))
 
@@ -110,4 +107,6 @@ def logout():
 # Dashboard
 @app.route('/dashboard')
 def dashboard():
-    return render_template('dashboard.html')
+    if session['logged_in']:
+        return render_template('dashboard.html')
+    return redirect(url_for('login'))
