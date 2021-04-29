@@ -107,6 +107,7 @@ def logout():
 # Dashboard
 @app.route('/dashboard')
 def dashboard():
-    if session['logged_in']:
-        return render_template('dashboard.html')
-    return redirect(url_for('login'))
+    if session['logged_in'] == False:
+        return redirect(url_for('login'))
+    return render_template('dashboard.html')
+    
