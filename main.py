@@ -49,9 +49,12 @@ def article(id):
 
 # Registration Form
 class RegisterForm(Form):
-    name = StringField('Name', [validators.DataRequired(), validators.Length(min=1, max=50)])
-    username = StringField('Username', [validators.DataRequired(), validators.Length(min=4, max=25)])
-    email = EmailField('Email address', [validators.DataRequired(), validators.Email()])
+    name = StringField(
+        'Name', [validators.DataRequired(), validators.Length(min=1, max=50)])
+    username = StringField(
+        'Username', [validators.DataRequired(), validators.Length(min=4, max=25)])
+    email = EmailField('Email address', [
+                       validators.DataRequired(), validators.Email()])
     password = PasswordField('Password', [
         validators.DataRequired(),
         validators.EqualTo('confirm', message='Passwords do not match.')
@@ -102,7 +105,8 @@ def login():
             if sha256_crypt.verify(password_candidate, password):
                 session['logged_in'] = True
                 session['username'] = username
-                session['name'] = db['users'].find_one({'username': username})['Name']
+                session['name'] = db['users'].find_one(
+                    {'username': username})['Name']
 
                 flash('You are now logged in.', 'success')
                 return redirect(url_for('dashboard'))
