@@ -9,7 +9,7 @@ import ssl
 import os
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.urandom(12).hex()
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
 # Connecting to database
 url = os.environ.get('MONGODB_URI')
