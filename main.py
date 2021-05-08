@@ -5,10 +5,14 @@ from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 from passlib.hash import sha256_crypt
 from wtforms.fields.html5 import EmailField
 from pymongo import MongoClient
+from flask_talisman import Talisman
 import ssl
 import os
 
 app = Flask(__name__)
+Talisman(app)
+
+# Secret Key for our app.
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
 # Connecting to database
