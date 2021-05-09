@@ -72,18 +72,21 @@ def register():
 
         # Adding user's details to database
         if existing_username.count() == 0 and existing_email.count() == 0:
-            db['users'].insert_one({
-                'Name': form.name.data,
-                'Email': form.email.data,
-                'username': form.username.data,
-                'password': sha256_crypt.encrypt(str(form.password.data))
-            })
-
-            flash('You are now registered and can login', 'success')
-            return redirect(url_for('login'))
+            if validate_email(form.email.data) is True:
+                db['users'].insert_one({
+                    'Name': form.name.data,
+                    'Email': form.email.data,
+                    'username': form.username.data,
+                    'password': sha256_crypt.encrypt(str(form.password.data))
+                })
+                flash('You are now registered and can login', 'success')
+                return redirect(url_for('login'))
+            else:
+                flash('Please check your email.', 'danger')
+                return render_template('register.html', form=form)
         else:
             if existing_email.count() != 0:
-                flash('Email is already being used.')
+                flash('Email is already being used.', 'danger')
             elif existing_username.count() != 0:
                 flash('Username is already taken.')
     return render_template('register.html', form=form)
