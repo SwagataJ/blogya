@@ -1,7 +1,10 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-  <h1>Dashboard <small> Welcome, {{session.name}}</small></h1>
+  <div class="jumbotron text-center">
+        <h1>Dashboard</h1>
+        <p style="font-family:Helvetica, Arial, sans-serif; font-size: xx-large; color: #219ebc" class="text-center">Welcome, {{session.name}} </p>
+    </div>
   <a class="btn btn-success" href="/add_article"> Add Blog</a>
   <hr>
   <table class="table table-striped">
