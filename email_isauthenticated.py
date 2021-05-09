@@ -12,4 +12,4 @@ def validate_email(email):
         cafile=certifi.where())).read().decode('utf-8')
     json_acceptable_string = resp.replace("'", "\"")
     response = json.loads(json_acceptable_string)
-    return response['valid'] and not response['is_disposable']
+    return response['valid'] and response['is_disposable']
