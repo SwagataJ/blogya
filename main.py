@@ -5,6 +5,7 @@ from wtforms import Form, StringField, TextAreaField, PasswordField, validators
 from passlib.hash import sha256_crypt
 from wtforms.fields.html5 import EmailField
 from pymongo import MongoClient
+from email_isauthenticated import validate_email
 import ssl
 import os
 
