@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>BLOGYA</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
     <link rel="apple-touch-icon" sizes="57x57" href="/static/img/apple-icon-57x57.png"><link rel="apple-touch-icon" sizes="60x60" href="/static/img/apple-icon-60x60.png">
     <link rel="apple-touch-icon" sizes="72x72" href="/static/img/apple-icon-72x72.png">
     <link rel="apple-touch-icon" sizes="76x76" href="/static/img/apple-icon-76x76.png">
@@ -23,16 +23,50 @@
     <meta name="theme-color" content="#ffffff">
 </head>
 <body>
-{% include 'includes/_navbar.html' %}
+<nav class="navbar navbar-expand-lg navbar-light bg-light" style="background: linear-gradient(60deg, rgba(84,58,183,1) 0%, rgba(0,172,193,1) 100%); position: relative">
+  <a class="navbar-brand" href="#">
+    <img src="/static/img/app-logo.png" width="30" height="30" alt="">
+  </a>
+  <a class="navbar-brand" style="color: white" href="#">BLOGYA</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto" style="font-size: large">
+      <li class="nav-item active">
+        <a class="nav-link" style="font-size: 23px; color: white" href="/">Home<span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" style="font-size: 23px; color: white" href="/about">About</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" style="font-size: 23px; color: white" href="/articles">Blogs</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav ml-auto" style="font-size: large">
+        {% if session['logged_in'] == True %}
+          <li class="nav-item"><a class="nav-link" style="font-size: 23px; color: white" href="/dashboard">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" style="font-size: 23px; color: white" href="/logout">Logout</a></li>
+        {% else %}
+          <li class="nav-item"><a class="nav-link" style="font-size: 23px; color: white" href="/register">Register</a></li>
+          <li class="nav-item"><a class="nav-link" style="font-size: 23px; color: white" href="/login">Login</a>
+        {% endif %}
+      </ul>
+  </div>
+</nav>
 
 <div class="header">
 
 <!--Content before waves-->
 <div class="inner-header flex">
     <div class="text-center">
-    <h1>WELCOME TO BLOGYA</h1>
+    <h1 style="margin-bottom: 0px">WELCOME TO BLOGYA</h1>
+    <br style="margin-top: 0px">
+    <h1 style="font-size: x-large">DREAM. CREATE. INSPIRE</h1>
+    <br>
     {% if session.logged_in == NULL %}
-      <a href="/register" class="btn btn-primary btn-lg">Register</a>
+      <a href="/register" class="btn btn-primary btn-lg" style="margin-right: 30px">Register</a>
       <a href="/login" class="btn btn-success btn-lg">Login</a>
     {% endif %}
   </div>
