@@ -51,9 +51,9 @@ def article(id):
 # Registration Form
 class RegisterForm(Form):
     name = StringField(
-        'Name', [validators.DataRequired(), validators.Length(min=1, max=50)])
+        'Name', [validators.DataRequired(), validators.Length(min=4, max=50)])
     username = StringField(
-        'Username', [validators.DataRequired(), validators.Length(min=4, max=25)])
+        'Username', [validators.DataRequired(), validators.Length(min=8, max=25)])
     email = EmailField('Email address', [
                        validators.DataRequired(), validators.Email()])
     password = PasswordField('Password', [
