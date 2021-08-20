@@ -56,5 +56,3 @@ def send_email(receiver_email, user):
         server.starttls(context=context)
         server.login(username, password)
         server.sendmail(sender_email, receiver_email, message.as_string())
-
-
