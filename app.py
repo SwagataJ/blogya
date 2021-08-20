@@ -1,13 +1,17 @@
+import os
+import ssl
 from datetime import datetime
 from functools import wraps
-from flask import Flask, render_template, flash, redirect, url_for, session, logging, request
-from wtforms import Form, StringField, TextAreaField, PasswordField, validators
+from flask import Flask, render_template, flash, redirect, url_for, session, request
 from passlib.hash import sha256_crypt
-from wtforms.fields.html5 import EmailField
 from pymongo import MongoClient
+from wtforms import Form, StringField, TextAreaField, PasswordField, validators
+from wtforms.fields.html5 import EmailField
 from email_isauthenticated import validate_email
-import ssl
-import os
+from email_on_register import send_email
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
@@ -80,6 +84,7 @@ def register():
                     'username': form.username.data,
                     'password': sha256_crypt.encrypt(str(form.password.data))
                 })
+                send_email(form.email.data, form.name.data)
                 flash('You are now registered and can login', 'success')
                 return redirect(url_for('login'))
             else:
