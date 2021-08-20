@@ -9,9 +9,9 @@ load_dotenv()
 
 
 def send_email(receiver_email, user):
-    port = os.environ.get('PORT')
-    smtp_server = os.environ.get('SMTP_SERVER')
-    sender_email = os.environ.get('SENDER_EMAIL')
+    port = 587
+    smtp_server = "email-smtp.us-east-1.amazonaws.com"
+    sender_email = "no_reply@blogya.live"
     username = os.environ.get('MAILERTOGO_USERNAME')
     password = os.environ.get('MAILERTOGO_PASSWORD')
 
