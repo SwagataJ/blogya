@@ -82,7 +82,7 @@ def register():
                     'Name': form.name.data,
                     'Email': form.email.data,
                     'username': form.username.data,
-                    'password': sha256_crypt.encrypt(str(form.password.data))
+                    'password': sha256_crypt.hash(str(form.password.data))
                 })
                 send_email(form.email.data, form.name.data)
                 flash('You are now registered and can login', 'success')
