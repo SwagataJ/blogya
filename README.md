@@ -21,4 +21,4 @@ Blogya requires a number of environment variables for runtime configuration.
 
 ## License 
 
-Ledbetter is distributed under the MIT license.
+Blogya is distributed under the MIT license.
