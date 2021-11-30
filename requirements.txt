@@ -1,3 +1,4 @@
+pip==20.3.1
 appnope==0.1.2
 attrs==20.3.0
 autogen==1.0.13
