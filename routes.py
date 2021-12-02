@@ -1,25 +1,13 @@
-import os
-import ssl
+from __init__ import app, db
 from datetime import datetime
 from functools import wraps
-from flask import Flask, render_template, flash, redirect, url_for, session, request
+from flask import render_template, flash, redirect, url_for, session, request
 from passlib.hash import sha256_crypt
-from pymongo import MongoClient
-from wtforms import Form, StringField, TextAreaField, PasswordField, validators
-from wtforms.fields.html5 import EmailField
-from email_isauthenticated import validate_email
-from email_on_register import send_email
-from dotenv import load_dotenv
-
-load_dotenv()
-
-app = Flask(__name__)
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
-
-# Connecting to database
-url = os.environ.get('MONGODB_URI')
-client = MongoClient(url, ssl_cert_reqs=ssl.CERT_NONE)
-db = client['myFlaskApp']
+from emails import send_email_register, validate_email, send_email_reset
+from forms import RegisterForm, LoginForm, ResetPasswordFormAfterTokenAuth, ArticleForm, ResetPasswordForm
+from tokens import generate_token, verify_token
+from itsdangerous import URLSafeTimedSerializer as Serializer, BadSignature, BadData
+import os
 
 
 # HomePage
@@ -52,21 +40,6 @@ def article(id):
     return render_template('article.html', article=articlewithid)
 
 
-# Registration Form
-class RegisterForm(Form):
-    name = StringField(
-        'Name', [validators.DataRequired(), validators.Length(min=1, max=50)])
-    username = StringField(
-        'Username', [validators.DataRequired(), validators.Length(min=4, max=25)])
-    email = EmailField('Email address', [
-                       validators.DataRequired(), validators.Email()])
-    password = PasswordField('Password', [
-        validators.DataRequired(),
-        validators.EqualTo('confirm', message='Passwords do not match.')
-    ])
-    confirm = PasswordField('Confirm Password')
-
-
 # Registration
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -84,7 +57,7 @@ def register():
                     'username': form.username.data,
                     'password': sha256_crypt.hash(str(form.password.data))
                 })
-                send_email(form.email.data, form.name.data)
+                send_email_register(form.email.data, form.name.data)
                 flash('You are now registered and can login', 'success')
                 return redirect(url_for('login'))
             else:
@@ -101,9 +74,10 @@ def register():
 # Login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password_candidate = request.form['password']
+    form = LoginForm(request.form)
+    if request.method == 'POST' and form.validate():
+        username = form.username.data
+        password_candidate = form.password.data
         user = db['users'].find_one({'username': username})
 
         # Checking if user exists
@@ -125,7 +99,7 @@ def login():
         else:
             error = 'Username does not exist. Please register.'
             return render_template('login.html', error=error)
-    return render_template('login.html')
+    return render_template('login.html', form=form)
 
 
 # Check if user is logged in
@@ -160,12 +134,6 @@ def dashboard():
     else:
         msg = 'No article found'
         return render_template('dashboard.html', msg=msg)
-
-
-# Article Form Class
-class ArticleForm(Form):
-    title = StringField('Title', [validators.Length(min=1, max=200)])
-    body = TextAreaField('Body', [validators.Length(min=30)])
 
 
 # Add Article
@@ -217,6 +185,36 @@ def edit_article(id):
         return redirect(url_for('dashboard'))
 
     return render_template('edit_article.html', form=form)
+
+
+# Reset Password
+@app.route('/reset_password', methods=['GET', 'POST'])
+def reset_request():
+    form = ResetPasswordForm(request.form)
+    if form.validate():
+        # email = form.email.data
+        user = db['users'].find_one({'Email': form.email.data})
+        if user:
+            send_email_reset(user)
+            flash('An email has been sent with instructions to reset your password.', 'info')
+            return redirect(url_for('login'))
+    return render_template('reset_request.html', form=form)
+
+
+# Reset Password with token
+@app.route('/reset_password/<string:token>', methods=['GET', 'POST'])
+def reset_token(token):
+    user = verify_token(token)
+    if user is None:
+        flash('Invalid or expired token', 'warning')
+        return redirect(url_for('reset_request'))
+    form = ResetPasswordFormAfterTokenAuth(request.form)
+    if form.validate():
+        password = sha256_crypt.encrypt(str(form.password.data))
+        db['users'].update_one({'Email': user['Email']}, {'$set': {'password': password}})
+        flash('Password has been reset', 'success')
+        return redirect(url_for('login'))
+    return render_template('reset_password.html', form=form)
 
 
 # Delete Article
