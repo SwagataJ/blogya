@@ -26,7 +26,8 @@ class LoginForm(Form):
 
 # Reset Password Form
 class ResetPasswordForm(Form):
-    email = EmailField('Email address', [validators.DataRequired(), validators.Email()])
+    email = EmailField('Email address', [
+                       validators.DataRequired(), validators.Email()])
 
 
 # Article Form Class
