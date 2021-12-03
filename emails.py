@@ -26,7 +26,7 @@ def validate_email(email):
 
 def send_email_register(receiver_email, user):
     port = 587
-    smtp_server = "email-smtp.us-east-1.amazonaws.com"
+    smtp_server = "email-smtp.us-west-1.amazonaws.com"
     sender_email = "no_reply@blogya.live"
     username = os.environ.get('MAILERTOGO_USERNAME')
     password = os.environ.get('MAILERTOGO_PASSWORD')
