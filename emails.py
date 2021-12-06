@@ -33,7 +33,7 @@ def send_email_register(receiver_email, user):
 
     message = MIMEMultipart("alternative")
     message["Subject"] = "Welcome to BLOGYA!"
-    message["From"] = sender_email
+    message["From"] = "Team Blogya <{email}>".format(email=sender_email)
     message["To"] = receiver_email
 
     text = """\
@@ -83,33 +83,33 @@ def send_email_reset(user):
 
     message = MIMEMultipart("alternative")
     message["Subject"] = "Password Reset Request"
-    message["From"] = sender_email
+    message["From"] = "Team Blogya <{email}>".format(email=sender_email)
     message["To"] = user['Email']
 
     serial = generate_token(user['Email'])
     link = url_for('reset_token', token=serial, _external=True)
 
     text = """\
-    Hi {},
+    Hi {name},
     As you have requested for reset password instructions, here they are, please follow the URL:
-    [Reset Password]({})
+    [Reset Password]({url})
     Alternatively, open the following url in your browser:
-    {}""".format(user['Name'], link, link)
+    {url}""".format(name=user['Name'], url=link)
 
     html = """\
     <html>
     <body>
-        <p>Hi {},</p>
+        <p>Hi {name},</p>
         <p>As you have requested for reset password instructions, here they
  are, please follow the URL:</p>
-        <p><a href="{}">Reset Password</a></p>
+        <p><a href="{url}">Reset Password</a></p>
         <p>Alternatively, open the following url in your browser</p>
         <p>
-            <pre>{}</pre>
+            <pre>{url}</pre>
         </p>
         </body>
         </html>
-        """.format(user['Name'], link, link)
+        """.format(name=user['Name'], url=link)
     part1 = MIMEText(text, "plain")
     part2 = MIMEText(html, "html")
 
