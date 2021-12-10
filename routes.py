@@ -95,10 +95,10 @@ def login():
                 return redirect(url_for('dashboard'))
             else:
                 error = 'Invalid login.'
-                return render_template('login.html', error=error)
+                return render_template('login.html', error=error, form=form)
         else:
             error = 'Username does not exist. Please register.'
-            return render_template('login.html', error=error)
+            return render_template('login.html', error=error, form=form)
     return render_template('login.html', form=form)
 
 
