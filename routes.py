@@ -196,7 +196,8 @@ def reset_request():
         user = db['users'].find_one({'Email': form.email.data})
         if user:
             send_email_reset(user)
-            flash('An email has been sent with instructions to reset your password.', 'info')
+            flash(
+                'An email has been sent with instructions to reset your password.', 'info')
             return redirect(url_for('login'))
     return render_template('reset_request.html', form=form)
 
@@ -211,7 +212,8 @@ def reset_token(token):
     form = ResetPasswordFormAfterTokenAuth(request.form)
     if form.validate():
         password = sha256_crypt.encrypt(str(form.password.data))
-        db['users'].update_one({'Email': user['Email']}, {'$set': {'password': password}})
+        db['users'].update_one({'Email': user['Email']}, {
+                               '$set': {'password': password}})
         flash('Password has been reset', 'success')
         return redirect(url_for('login'))
     return render_template('reset_password.html', form=form)
