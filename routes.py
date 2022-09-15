@@ -57,7 +57,7 @@ def register():
                     'username': form.username.data,
                     'password': sha256_crypt.hash(str(form.password.data))
                 })
-                #send_email_register(form.email.data, form.name.data)
+                send_email_register(form.email.data, form.name.data)
                 flash('You are now registered and can login', 'success')
                 return redirect(url_for('login'))
             else:
