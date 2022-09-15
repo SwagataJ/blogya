@@ -27,7 +27,7 @@ def validate_email(email):
 def send_email_register(receiver_email, user):
     port = 587
     smtp_server = "email-smtp.eu-west-1.amazonaws.com"
-    sender_email = "no_reply@blogya.live"
+    sender_email = "no_reply@blogya.social"
     username = os.environ.get('MAILERTOGO_USERNAME')
     password = os.environ.get('MAILERTOGO_PASSWORD')
 
@@ -77,7 +77,7 @@ def send_email_register(receiver_email, user):
 def send_email_reset(user):
     port = 587
     smtp_server = "email-smtp.eu-west-1.amazonaws.com"
-    sender_email = "reset@blogya.live"
+    sender_email = "reset@blogya.social"
     username = os.environ.get('MAILERTOGO_USERNAME')
     password = os.environ.get('MAILERTOGO_PASSWORD')
 
